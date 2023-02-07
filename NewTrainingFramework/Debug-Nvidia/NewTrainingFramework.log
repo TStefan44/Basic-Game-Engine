@@ -1,0 +1,26 @@
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  stdafx.cpp
+cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  Texture.cpp
+  Shaders.cpp
+  SceneObject.cpp
+  SceneManager.cpp
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(163,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(166,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(169,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(241,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(243,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(245,15): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(247,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(249,15): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(448,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(451,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneManager.cpp(454,12): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  ResourceManager.cpp
+  NewTrainingFramework.cpp
+  Model.cpp
+  Globals.cpp
+  Camera.cpp
+  Generating Code...
+Camera.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  NewTrainingFramework.vcxproj -> D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\BIN-Nvidia\NewTrainingFramework.exe
