@@ -19,9 +19,11 @@ namespace res {
 			return os;
 		}
 
+	public:
+		GLuint textureId;
+
 	private:
 		TextureResource const* tr;
-		GLuint textureId;
 		char* array_pixels;
 		int width;
 		int height;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Resource.h"
-
 #include "../Utilities/utilities.h"
+
+#include "Resource.h"
 
 namespace res {
 	class Shader
@@ -13,6 +13,7 @@ namespace res {
 		~Shader();
 
 		int Load();
+		void LoadLocationsAttributes();
 
 		friend std::ostream& operator<<(std::ostream& os, const Shader& shader) {
 			os << *shader.sr;
@@ -20,9 +21,25 @@ namespace res {
 		}
 
 		// class variables
+
+	public:
+		GLuint program;
+
+		GLint positionAttribute;
+		GLint colorAttribute;
+		GLint uvAttribute;
+
+		GLint modelMatrix;
+		GLint viewMatrix;
+		GLint perspectiveMatrix;
+
+		// TODO: Use a vector in the future
+		GLint textureUniform_0;
+		GLint textureUniform_1;
+		GLint textureUniform_2;
+
 	private:
 		ShaderResource const* sr;
-		GLuint program;
 		GLuint vertexShader;
 		GLuint fragmentShader;
 	};

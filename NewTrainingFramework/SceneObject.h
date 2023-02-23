@@ -15,14 +15,14 @@ namespace scene_obj {
 
 	class SceneObject {
 	public:
-		SceneObject(res::Model *model, res::Shader* shader, std::vector<res::Texture*> * textures);
+		SceneObject(res::Model* model, res::Shader* shader, std::vector<res::Texture*>* textures);
 		SceneObject();
-		~SceneObject();
+		virtual ~SceneObject();
 
 		void Init(int id, std::string name, ObjectType type, Vector3 position, Vector3 rotation, Vector3 scale, bool DEPTH_TEST);
 		void Draw(ESContext* esContext);
 		void Update(ESContext* esContext, float deltaTime);
-		
+
 		friend std::ostream& operator<<(std::ostream& os, const SceneObject& object) {
 			os << "Object : Name " + object.name;
 			if (object.model != nullptr) os << "\n\t" << *object.model;
@@ -37,6 +37,10 @@ namespace scene_obj {
 		}
 
 	private:
+		void DrawCommon();
+		void sendTexture(int TEXTURE, int id);
+
+	private:
 		int id;
 		std::string name;
 		ObjectType type;
@@ -47,7 +51,7 @@ namespace scene_obj {
 
 		res::Model* model;
 		res::Shader* shader;
-		std::vector<res::Texture*> * textures;
+		std::vector<res::Texture*>* textures;
 
 		bool DEPTH_TEST;
 	};

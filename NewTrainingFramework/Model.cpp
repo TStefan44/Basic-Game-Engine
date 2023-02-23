@@ -19,16 +19,16 @@ void Model::Load() {
 		return;
 	}
 
-	nr_index = verticesData.size();
+	nr_index = indicesData.size();
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData[0]) * nr_index, &verticesData[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData[0]) * verticesData.size(), &verticesData[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesData[0]) * indicesData.size(), &indicesData[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesData[0]) * nr_index, &indicesData[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// TODO: create wired index and ibo
@@ -70,7 +70,7 @@ int Model::parseData() {
 * the info is extracted in an stringstream, we use an action to load data in designated
 * variables
 */
-void Model::parseSegmentData(std::ifstream& fin, std::string& line, Action action) {
+void Model::parseSegmentData(std::ifstream& fin, std::string& line, Action & action) {
 	int num;
 	std::string aux;
 	std::stringstream s_line;

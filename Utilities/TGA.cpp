@@ -120,7 +120,7 @@ char * LoadTGA( const char * szFileName, int * width, int * height, int * bpp )
     
     FILE * f;
 	
-	if (fopen_s(&f, szFileName, "rb" ) != 0)
+	if (fopen_s(&f, szFileName, "rb" ) != 0) 
         return NULL;
 
     TGA_HEADER header;

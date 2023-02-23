@@ -31,5 +31,11 @@ void Texture::Load() {
 	glTexParameteri(tr->target, GL_TEXTURE_WRAP_T, tr->wrap_t);
 
 	array_pixels = LoadTGA(filePath.c_str(), &width, &height, &bpp);
+
+	if (array_pixels == NULL) {
+		std::cerr << "Can't open " << filePath << "\n";
+		return;
+	}
+
 	glTexImage2D(tr->target, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, array_pixels);
 }

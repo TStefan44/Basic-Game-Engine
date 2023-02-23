@@ -9,6 +9,7 @@ SceneManager* SceneManager::instance = nullptr;
 
 SceneManager::SceneManager() {
 	resourceManager = ResourceManager::getInstance();
+	inputController = InputController::getInstace();
 
 	initSceneInfo();
 }
@@ -63,7 +64,7 @@ void SceneManager::initSceneInfo() {
 /*
 * Set file configuration location and start parsing it's content
 */
-void SceneManager::Init(std::string const & file_path, std::string const & file_name) {
+void SceneManager::Init(std::string const& file_path, std::string const& file_name) {
 	this->file_path = file_path;
 	this->file_name = file_name;
 
@@ -171,7 +172,7 @@ void SceneManager::readBGFromFile(rapidxml::xml_node<> const* pRoot) {
 	}
 
 	// Set BG Color;
-	Globals::setColorBG(Vector3(r, 1, b));
+	Globals::setColorBG(Vector3(r, g, b));
 }
 
 void SceneManager::readControlsFromFile(rapidxml::xml_node<> const* pRoot) {
@@ -196,9 +197,49 @@ void SceneManager::readControlsFromFile(rapidxml::xml_node<> const* pRoot) {
 		}
 
 		// TODO: create action map
+		createInput(key, action);
+
 		// TODO: delete later
 		std::cout << pRoot->name() << " : Control  Key = " + key + " Action = " + action + "\n";
 	}
+}
+
+void SceneManager::createInput(std::string key, std::string action) {
+	char c = key[0];
+	InputController::Action newAction;
+
+	if (action == "MOVE_CAMERA_POSITIVE_Z") {
+		newAction = [this]() {
+			mainCamera->MoveOz(-1);
+		};
+	}
+	else if (action == "MOVE_CAMERA_NEGATIVE_Z") {
+		newAction = [this]() {
+			mainCamera->MoveOz(1);
+		};
+	}
+	else if (action == "MOVE_CAMERA_POSITIVE_X") {
+		newAction = [this]() {
+			mainCamera->MoveOx(1);
+		};
+	}
+	else if (action == "MOVE_CAMERA_NEGATIVE_X") {
+		newAction = [this]() {
+			mainCamera->MoveOx(-1);
+		};
+	}
+	else if (action == "ROTATE_CAMERA_CW_Y") {
+		newAction = [this]() {
+			mainCamera->rotateOy(-1);
+		};
+	}
+	else if (action == "ROTATE_CAMERA_CCW_Y") {
+		newAction = [this]() {
+			mainCamera->rotateOy(1);
+		};
+	}
+
+	inputController->AddAction(c, newAction);
 }
 
 void SceneManager::readCamerasFromFile(rapidxml::xml_node<> const* pRoot) {
@@ -260,7 +301,7 @@ void SceneManager::readCamerasFromFile(rapidxml::xml_node<> const* pRoot) {
 
 		// Create camera and add it in vector
 		auto* new_camera = new Camera(camView, target, position,
-				up, near, far, fov, translationSpeed, rotationSpeed);
+			up, near, far, fov, translationSpeed, rotationSpeed);
 		cameras[cameraId] = new_camera;
 	}
 }
@@ -273,9 +314,9 @@ void SceneManager::readActiveCameraFromFile(rapidxml::xml_node<> const* pRoot) {
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T> & vec) {
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
 	os << "[";
-	for (const T & i : vec) {
+	for (const T& i : vec) {
 		os << i << ",";
 	}
 	os << "]";
@@ -335,28 +376,29 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 			}
 		}
 
-		if (type == "normal") {
-			obj_type = scene_obj::ObjectType::Normal;
-		}
-		else {
-			obj_type = scene_obj::ObjectType::Terrain;
-		}
-
 		// Create object with read data and load it in memory
-		res::Model * model = resourceManager->LoadModel(modelId);
-		res::Shader * shader = resourceManager->LoadShader(shaderId);
+		scene_obj::SceneObject* new_object;
+
+		res::Model* model;
+		res::Shader* shader = resourceManager->LoadShader(shaderId);
 		auto* textures = new std::vector<res::Texture*>;
 		for (auto textureId : texturesId) {
-			res::Texture * new_texture = resourceManager->LoadTexture(textureId);
+			res::Texture* new_texture = resourceManager->LoadTexture(textureId);
 			textures->push_back(new_texture);
 		}
 
-		auto * new_object = new scene_obj::SceneObject(model, shader, textures);
+		if (type == "normal") {
+			model = resourceManager->LoadModel(modelId);
+			obj_type = scene_obj::ObjectType::Normal;
+			new_object = new scene_obj::SceneObject(model, shader, textures);
+		}
+		else {
+			obj_type = scene_obj::ObjectType::Terrain;
+			new_object = new scene_obj::Terrain(shader, textures);
+		}
+
 		new_object->Init(objectId, name, obj_type, position, rotation, scale, TRUE);
 		objects[objectId] = new_object;
-
-		// TODO: model can be string for type != normal
-		
 	}
 }
 
@@ -459,9 +501,17 @@ Vector3 SceneManager::readVector3(rapidxml::xml_node<> const* pRoot, VecType typ
 }
 
 void SceneManager::Draw(ESContext* esContext) {
+	for (auto const& obj : objects) {
+		obj.second->Draw(esContext);
+	}
 }
 
 void SceneManager::Update(ESContext* esContext, float deltaTime) {
+	mainCamera->setDeltaTime(deltaTime);
+
+	for (auto const& obj : objects) {
+		obj.second->Update(esContext, deltaTime);
+	}
 }
 
 void SceneManager::freeResources() {
@@ -472,7 +522,7 @@ SceneManager::~SceneManager() {}
 void SceneManager::DebugPrintAll() {
 	// Print cameras
 	std::cout << "\n\nScene Manager debug info\nCameras : \n";
-	for (auto &camera : cameras) {
+	for (auto& camera : cameras) {
 		std::cout << "Id = " << camera.first << " Info -->  " << *camera.second << "\n";
 	}
 

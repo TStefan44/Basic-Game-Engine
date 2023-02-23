@@ -6,6 +6,7 @@
 #include "Shaders.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "InputController.h"
 
 #include <conio.h>
 
@@ -13,9 +14,15 @@
 
 manager::ResourceManager* resourceManager;
 manager::SceneManager* sceneManager;
+manager::InputController* inputController;
+
+GLfloat maxTime = 0.05f;
+GLfloat currentTime;
 
 int Init ( ESContext *esContext )
 {
+	glEnable(GL_DEPTH_TEST);
+
 	// Test Resource Manager
 	resourceManager = manager::ResourceManager::getInstance();
 	resourceManager->Init("../Resources/Configuration/", "resourceManager.xml");
@@ -28,6 +35,10 @@ int Init ( ESContext *esContext )
 
 	std::cout << "Managers done!\n";
 
+	// Test Input Controller
+	inputController = manager::InputController::getInstace();
+
+
 	Vector3 colorBg = Globals::getColorBG();
 	glClearColor(colorBg.x, colorBg.y, colorBg.z, 0.0f);
 
@@ -36,25 +47,32 @@ int Init ( ESContext *esContext )
 
 void Draw ( ESContext *esContext )
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	sceneManager->Draw(esContext);
 
 	eglSwapBuffers ( esContext->eglDisplay, esContext->eglSurface );
 }
 
 void Update ( ESContext *esContext, float deltaTime )
 {
-
+	currentTime += deltaTime;
+	if (currentTime > maxTime) {
+		currentTime -= maxTime;
+		sceneManager->Update(esContext, deltaTime);
+	}
 }
 
 void Key ( ESContext *esContext, unsigned char key, bool bIsPressed)
 {
-	
+	inputController->DoAction(key);
 }
 
 void CleanUp()
 {
 	delete resourceManager;
 	delete sceneManager;
+	delete inputController;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -66,10 +84,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
     esInitContext ( &esContext );
 
+	esCreateWindow(&esContext, Globals::getWindowName().c_str(), Globals::getScreenWidth(), Globals::getScreenHeight(), ES_WINDOW_RGB | ES_WINDOW_DEPTH);
+
 	if (Init(&esContext) != 0)
 		return 0;
-
-	esCreateWindow ( &esContext, Globals::getWindowName().c_str(), Globals::getScreenWidth(), Globals::getScreenHeight(), ES_WINDOW_RGB | ES_WINDOW_DEPTH);
 
 	esRegisterDrawFunc ( &esContext, Draw );
 	esRegisterUpdateFunc ( &esContext, Update );

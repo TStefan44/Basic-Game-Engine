@@ -9,9 +9,11 @@
 #include "../Utilities/rapidxml_utils.hpp"
 #include "../Utilities/utilities.h"
 
-#include "ResourceManager.h"
-#include "Camera.h"
 #include "SceneObject.h"
+#include "Terrain.h"
+#include "ResourceManager.h"
+#include "InputController.h"
+#include "Camera.h"
 #include "Globals.h"
 
 #undef near
@@ -63,6 +65,7 @@ namespace manager {
 		void readActiveCameraFromFile(rapidxml::xml_node<> const* pRoot);
 		void readObjectsFromFile(rapidxml::xml_node<> const* pRoot);
 		void readDebugSettingFromFile(rapidxml::xml_node<> const* pRoot);
+		void createInput(std::string key, std::string action);
 		Vector3 readVector3(rapidxml::xml_node<> const* pRoot, VecType type);
 		std::vector<Vector3> readAxis(rapidxml::xml_node<> const* pRoot);
 		std::vector<int> readTexturesId(rapidxml::xml_node<> const* pRoot);
@@ -84,16 +87,19 @@ namespace manager {
 		void freeResources();
 
 		// Class variables
+	public:
+		camera::Camera* mainCamera;
+
 	private:
 		// Resource Manager pointer
 		ResourceManager* resourceManager;
+		InputController* inputController;
 
 		// File location and name to read scene resource from
 		std::string file_path;
 		std::string file_name;
 
 		// SceneManager data
-		camera::Camera* mainCamera;
 		std::map<int, camera::Camera*> cameras;
 		std::map<int, scene_obj::SceneObject*> objects;
 

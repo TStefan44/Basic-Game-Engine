@@ -7,6 +7,10 @@ GLfloat toRadians(GLfloat degree) {
 	return (degree * ((float)PI / 180.f));
 }
 
+Vector3 toRadians(Vector3& vector) {
+	return Vector3(toRadians(vector.x), toRadians(vector.y), toRadians(vector.z));
+}
+
 //Vector2
 
 GLfloat Vector2::Length()
@@ -622,9 +626,9 @@ Matrix & Matrix::operator -= (Matrix & mat)
 	return *this;
 }
 
-Matrix Matrix::operator * (Matrix & mat)
-{
+Matrix Matrix::operator * (Matrix& mat) {
 	Matrix res;
+
 	res.m[0][0] = m[0][0] * mat.m[0][0] + m[0][1] * mat.m[1][0] + m[0][2] * mat.m[2][0] + m[0][3] * mat.m[3][0];
 	res.m[0][1] = m[0][0] * mat.m[0][1] + m[0][1] * mat.m[1][1] + m[0][2] * mat.m[2][1] + m[0][3] * mat.m[3][1];
 	res.m[0][2] = m[0][0] * mat.m[0][2] + m[0][1] * mat.m[1][2] + m[0][2] * mat.m[2][2] + m[0][3] * mat.m[3][2];
@@ -644,15 +648,8 @@ Matrix Matrix::operator * (Matrix & mat)
 	res.m[3][1] = m[3][0] * mat.m[0][1] + m[3][1] * mat.m[1][1] + m[3][2] * mat.m[2][1] + m[3][3] * mat.m[3][1];
 	res.m[3][2] = m[3][0] * mat.m[0][2] + m[3][1] * mat.m[1][2] + m[3][2] * mat.m[2][2] + m[3][3] * mat.m[3][2];
 	res.m[3][3] = m[3][0] * mat.m[0][3] + m[3][1] * mat.m[1][3] + m[3][2] * mat.m[2][3] + m[3][3] * mat.m[3][3];
-
+	
 	return res;
-}
-
-Matrix Matrix::operator * (GLfloat k)
-{
-	Matrix mat( *this );
-	mat *= k;
-	return mat;
 }
 
 Matrix & Matrix::operator *= (GLfloat k)
@@ -679,10 +676,43 @@ Vector4 Matrix::operator * (Vector4 & vec)
 
 Matrix & Matrix::operator = (Matrix & mat)
 {
+	if (this == &mat)
+		return *this;
+
 	m[0][0] = mat.m[0][0]; m[0][1] = mat.m[0][1]; m[0][2] = mat.m[0][2]; m[0][3] = mat.m[0][3];
 	m[1][0] = mat.m[1][0]; m[1][1] = mat.m[1][1]; m[1][2] = mat.m[1][2]; m[1][3] = mat.m[1][3];
 	m[2][0] = mat.m[2][0]; m[2][1] = mat.m[2][1]; m[2][2] = mat.m[2][2]; m[2][3] = mat.m[2][3];
 	m[3][0] = mat.m[3][0]; m[3][1] = mat.m[3][1]; m[3][2] = mat.m[3][2]; m[3][3] = mat.m[3][3];
 
 	return *this;
+}
+
+Matrix Transform3D::Translate(Vector3& vec) {
+	Matrix res;
+	res.SetTranslation(vec);
+	return res;
+}
+
+Matrix Transform3D::Scale(Vector3& vec) {
+	Matrix res;
+	res.SetScale(vec);
+	return res;
+}
+
+Matrix Transform3D::RotateX(GLfloat angle) {
+	Matrix res;
+	res.SetRotationX(angle);
+	return res;
+}
+
+Matrix Transform3D::RotateY(GLfloat angle) {
+	Matrix res;
+	res.SetRotationY(angle);
+	return res;
+}
+
+Matrix Transform3D::RotateZ(GLfloat angle) {
+	Matrix res;
+	res.SetRotationZ(angle);
+	return res;
 }
