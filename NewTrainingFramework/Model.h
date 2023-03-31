@@ -13,13 +13,13 @@
 
 namespace res {
 	class Model {
-
-	using Action = std::function<void(std::stringstream&)>;
+		using Action = std::function<void(std::stringstream&)>;
 
 	public:
 		// Constructors
 		Model();
 		Model(ModelResource const* mr);
+		Model(std::vector<Vertex> const& verticesData, std::vector<GLuint> const& indicesData);
 		~Model();
 
 		void Load();
@@ -27,7 +27,7 @@ namespace res {
 	private:
 		int parseData();
 		std::stringstream assemblyStream(std::string line) const;
-		void parseSegmentData(std::ifstream& fin, std::string& line, Action & action);
+		void parseSegmentData(std::ifstream& fin, std::string& line, Action& action);
 		void verticesAction(std::stringstream& s_line);
 		void indicesAction(std::stringstream& s_line);
 
@@ -37,7 +37,6 @@ namespace res {
 		}
 
 		// Class variables
-
 	public:
 		GLuint ibo;
 		GLuint vbo;
@@ -48,7 +47,6 @@ namespace res {
 	private:
 		// Model specific variables
 		ModelResource const* mr;
-		
 
 		// Model data
 		std::vector<Vertex> verticesData;

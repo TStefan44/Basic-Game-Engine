@@ -98,8 +98,6 @@ void Camera::rotateOx(GLint sens) {
 * 1 - trigonometric and 0 - clockwise
 */
 void Camera::rotateOy(GLint sens) {
-
-
 	Matrix mRotateOY;
 	mRotateOY.SetRotationY(toRadians(rotateSpeed * (float)sens * deltaTime));
 
@@ -119,7 +117,6 @@ void Camera::rotateOy(GLint sens) {
 * 1 - trigonometric and 0 - clockwise
 */
 void Camera::rotateOz(GLint sens) {
-
 	Matrix mRotateOz;
 	mRotateOz.SetRotationY(toRadians(rotateSpeed * (float)sens * deltaTime));
 
@@ -149,6 +146,9 @@ void Camera::updateWorldView() {
 	viewMatrix = invT * R.Transpose();
 }
 
+/*
+* Recalculate camera's own axis after a rotation
+*/
 void inline Camera::calculateAxis() {
 	zAxis = -(target - position).Normalize();
 	yAxis = up.Normalize();
@@ -174,6 +174,10 @@ Matrix Camera::getWorldMatrix() const {
 
 Matrix Camera::getPerspectiveMatrix() const {
 	return perspectiveMatrix;
+}
+
+Vector3 Camera::getPosition() const {
+	return position;
 }
 
 void Camera::setDeltaTime(GLfloat deltaTime) {

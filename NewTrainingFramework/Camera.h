@@ -3,7 +3,6 @@
 
 namespace camera {
 	class Camera {
-
 	public:
 		// class structures
 		enum class CameraType {
@@ -42,6 +41,7 @@ namespace camera {
 		Matrix getViewMatrix() const;
 		Matrix getWorldMatrix() const;
 		Matrix getPerspectiveMatrix() const;
+		Vector3 getPosition() const;
 
 		// Setter functions
 		void setDeltaTime(GLfloat deltaTime);
@@ -51,7 +51,7 @@ namespace camera {
 
 		// Debug functions
 		friend std::ostream& operator<<(std::ostream& os, const Camera& camera) {
-			os  << " Camera View = " << camera.camView << " Position =  " << camera.position
+			os << " Camera View = " << camera.camView << " Position =  " << camera.position
 				<< " Target = " << camera.target << " Up = " << camera.up << " Move Speed " << camera.moveSpeed
 				<< " Rotate Speed = " << camera.rotateSpeed
 				<< " fov = " << camera.fov << " Near Plane = " << camera.nearPlane << " Far Plane = " << camera.farPlane;

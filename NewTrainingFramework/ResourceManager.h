@@ -5,13 +5,15 @@
 #include <sstream>
 #include <fstream>
 
+#include "../Utilities/rapidxml_utils.hpp"
+#include "../Utilities/utilities.h"
+
 #include "Resource.h"
 #include "Model.h"
 #include "Texture.h"
 #include "Shaders.h"
 
-#include "../Utilities/rapidxml_utils.hpp"
-#include "../Utilities/utilities.h"
+
 
 namespace manager {
 	class ResourceManager {

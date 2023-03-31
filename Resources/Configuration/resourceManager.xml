@@ -5,8 +5,14 @@
 			<model id="1">
 				<file>croco.nfg</file>
 			</model>
+			<model id="2">
+				<file>SkyBox.nfg</file>
+			</model>
 			<model id="5">
 				<file>Bila.nfg</file>
+			</model>
+			<model id="20">
+				<file>fire.nfg</file>
 			</model>
 		</folder>
 
@@ -29,12 +35,27 @@
 				<vs>terrainShader.vs</vs>
 				<fs>terrainShader.fs</fs>
 			</shader>
+			<shader id="2">
+				<vs>skyShader.vs</vs>
+				<fs>skyShader.fs</fs>
+			</shader>
+			<shader id="20">
+				<vs>fireShader.vs</vs>
+				<fs>fireShader.fs</fs>
+			</shader>
 		<!-- si aici se adauga toate shaderele -->
 		</folder>
 		
 	</shaders>
 	<textures>
 		<folder path="Res/Textures/">
+			<texture id="1" type="cube">
+				<file>envMap.tga</file>			
+				<min_filter>LINEAR</min_filter>
+				<mag_filter>LINEAR</mag_filter>
+				<wrap_s>CLAMP_TO_EDGE</wrap_s>
+				<wrap_t>CLAMP_TO_EDGE</wrap_t>
+			</texture>
 			<texture id="4" type="2d">
 				<file>croco.tga</file>			
 				<min_filter>LINEAR</min_filter>
@@ -62,13 +83,41 @@
 				<mag_filter>LINEAR</mag_filter>
 				<wrap_s>REPEAT</wrap_s>
 				<wrap_t>REPEAT</wrap_t>
-			</texture>		
+			</texture>
+			<texture id="17" type="2d">
+				<file>Terrain_blend_map.tga</file>			
+				<min_filter>LINEAR</min_filter>
+				<mag_filter>LINEAR</mag_filter>
+				<wrap_s>REPEAT</wrap_s>
+				<wrap_t>REPEAT</wrap_t>
+			</texture>	
 			<texture id="5" type="2d">
 				<file>bus.tga</file>
 				<min_filter>LINEAR</min_filter>
 				<mag_filter>LINEAR</mag_filter>
 				<wrap_s>CLAMP_TO_EDGE</wrap_s>
 				<wrap_t>CLAMP_TO_EDGE</wrap_t>
+			</texture>
+			<texture id="20" type="2d">
+				<file>fire_mask.tga</file>			
+				<min_filter>LINEAR</min_filter>
+				<mag_filter>LINEAR</mag_filter>
+				<wrap_s>CLAMP_TO_EDGE</wrap_s>
+				<wrap_t>CLAMP_TO_EDGE</wrap_t>
+			</texture>
+			<texture id="21" type="2d">
+				<file>fire3.tga</file>			
+				<min_filter>LINEAR</min_filter>
+				<mag_filter>LINEAR</mag_filter>
+				<wrap_s>CLAMP_TO_EDGE</wrap_s>
+				<wrap_t>CLAMP_TO_EDGE</wrap_t>
+			</texture>
+			<texture id="22" type="2d">
+				<file>DisplacementMap.tga</file>			
+				<min_filter>LINEAR</min_filter>
+				<mag_filter>LINEAR</mag_filter>
+				<wrap_s>REPEAT</wrap_s>
+				<wrap_t>REPEAT</wrap_t>
 			</texture>
 			<!-- si aici se adauga toate texturile -->
 		</folder>

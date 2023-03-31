@@ -8,17 +8,26 @@ Model::Model(ModelResource const* mr) : mr(mr) {
 	ibo = wire_ibo = vbo = 0;
 	nr_index = nr_index_wired = 0;
 
+	if (parseData() != 0) {
+		std::cerr << "Can't load in memory model " << mr->file_name << "\n";
+		return;
+	}
+
+	Load();
+}
+
+Model::Model(std::vector<Vertex> const& verticesData, std::vector<GLuint> const& indicesData) :
+	verticesData(verticesData), indicesData(indicesData)
+{
+	ibo = wire_ibo = vbo = 0;
+	nr_index = nr_index_wired = 0;
+
 	Load();
 }
 
 Model::Model() : Model(nullptr) {}
 
 void Model::Load() {
-	if (parseData() != 0) {
-		std::cerr << "Can't load in memory model " << mr->file_name << "\n";
-		return;
-	}
-
 	nr_index = indicesData.size();
 
 	glGenBuffers(1, &vbo);
@@ -70,7 +79,7 @@ int Model::parseData() {
 * the info is extracted in an stringstream, we use an action to load data in designated
 * variables
 */
-void Model::parseSegmentData(std::ifstream& fin, std::string& line, Action & action) {
+void Model::parseSegmentData(std::ifstream& fin, std::string& line, Action& action) {
 	int num;
 	std::string aux;
 	std::stringstream s_line;

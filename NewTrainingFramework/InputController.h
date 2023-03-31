@@ -7,15 +7,16 @@
 
 namespace manager {
 	class InputController {
-
 	private:
 		InputController();
 
 	public:
+		// Define a void function with no arguments as
+		// an action to execute when input is detected
 		using Action = std::function<void()>;
 
 		~InputController();
-		
+
 		static InputController* getInstace();
 
 		void DoAction(char c);

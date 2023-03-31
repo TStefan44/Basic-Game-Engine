@@ -11,6 +11,8 @@
 
 #include "SceneObject.h"
 #include "Terrain.h"
+#include "SkyBox.h"
+#include "Fire.h"
 #include "ResourceManager.h"
 #include "InputController.h"
 #include "Camera.h"
@@ -39,9 +41,17 @@ namespace manager {
 			// For objects
 			model, shader, type, name, wired,
 			position, rotation, scale, color, textures,
+			dimension, heights,
+			followingCamera,
 
 			// For camera
 			target, up, translationSpeed, rotationSpeed, fov, near, far,
+
+			// For fog
+			fog, clearZone, transitionZone, fogColor,
+
+			// For fire
+			dispMax,
 
 			// For debug
 			objectAxes, camAxes,
@@ -69,6 +79,9 @@ namespace manager {
 		Vector3 readVector3(rapidxml::xml_node<> const* pRoot, VecType type);
 		std::vector<Vector3> readAxis(rapidxml::xml_node<> const* pRoot);
 		std::vector<int> readTexturesId(rapidxml::xml_node<> const* pRoot);
+		void readTerrainSize(rapidxml::xml_node<> const* pRoot, int& nr_cells, int& length_cell);
+		void readFollowCamera(rapidxml::xml_node<> const* pRoot, char& axes, int& idCamera);
+		void readFogFromFile(rapidxml::xml_node<> const* pRoot);
 
 	public:
 		~SceneManager();
@@ -89,6 +102,10 @@ namespace manager {
 		// Class variables
 	public:
 		camera::Camera* mainCamera;
+
+		float fogClear_r;
+		float fogTrans_R;
+		Vector3 fogColor;
 
 	private:
 		// Resource Manager pointer

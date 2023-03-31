@@ -16,6 +16,15 @@
 		<g>0.0</g>
 		<b>0.0</b>
 	</backgroundColor>
+	<fog>
+		<r>400</r>
+		<R>700</R>
+		<fogColor>
+			<r>0.50</r>
+			<g>0.55</g>
+			<b>0.60</b>
+		</fogColor>
+	</fog>
 	<controls>
 		<control>
 			<key>W</key>
@@ -79,8 +88,104 @@
 		<comment>in interiorul elementelor model, shader, texture, se gaseste id-ul corespunzator resursei din sceneManager.xml
 		Elementul position se refera practic la translatia obiectului.
 		</comment>
+
+		<object id="8">
+			<model>generated</model>
+			<shader>3</shader>
+			<type>terrain</type>
+			<name>Teren</name>
+			<textures>
+				<texture id="14"/>
+				<texture id="15"/>
+				<texture id="16"/>
+				<texture id="17"/>
+				<!-- TO DO adaugati texturile-->
+			</textures>
+			<position>
+				<x>0</x>
+				<y>-10</y>
+				<z>0</z>
+			</position>
+			<rotation>
+				<x>0.0</x>
+				<y>0.0</y>
+				<z>0.0</z>
+			</rotation>
+			<scale>
+				<x>1.0</x>
+				<y>1.0</y>
+				<z>1.0</z>
+			</scale>
+			<dimension>
+				<nr_cells>70</nr_cells>
+				<length_cell>20</dim_cell>
+			</dimension>
+			<heights>
+				<r>15</r>
+				<g>0</g>
+				<b>-15</b>
+			</heights>
+		</object>
+
+		<object id="7">
+			<model>2</model>
+			<shader>2</shader>
+			<type>skybox</type>
+			<name>SkyBox</name>
+			<textures>
+				<texture id="1"/>
+			</textures>
+			<position>
+				<x>0</x>
+				<y>0</y>
+				<z>0</z>
+			</position>
+			<rotation>
+				<x>180.0</x>
+				<y>0.0</y>
+				<z>0.0</z>
+			</rotation>
+			<scale>
+				<x>1000.0</x>
+				<y>1000.0</y>
+				<z>1000.0</z>
+			</scale>
+			<followingCamera>
+				<camera>1</camera>
+				<ox/>
+				<oz/>
+			</followingCamera>
+		</object>
+
+		<object id="20">
+			<model>20</model>
+			<shader>20</shader>
+			<type>fire</type>
+			<name>Fire</name>
+			<textures>
+				<texture id="20"/>
+				<texture id="21"/>
+				<texture id="22"/>
+			</textures>
+			<position>
+				<x>0</x>
+				<y>-50</y>
+				<z>-100</z>
+			</position>
+			<rotation>
+				<x>0</x>
+				<y>0.0</y>
+				<z>0.0</z>
+			</rotation>
+			<scale>
+				<x>5.0</x>
+				<y>5.0</y>
+				<z>5.0</z>
+			</scale>
+			<dispMax>2</dispMax>
+		</object>
+
 		<object id="1">
-			
 			<model>1</model>
 			<shader>10</shader>
 			<type>normal</type>
@@ -90,7 +195,7 @@
 			</textures>
 			<position>
 				<x>0</x>
-				<y>0</y>
+				<y>50</y>
 				<z>-500</z>
 			</position>
 			<rotation>
@@ -140,12 +245,12 @@
 				<b>0.0</b>
 			</color>
 			<position>
-				<x>3.5</x>
-				<y>0</y>
-				<z>20</z>
+				<x>100</x>
+				<y>2</y>
+				<z>-500</z>
 			</position>
 			<rotation>
-				<x>0</x>
+				<x>50</x>
 				<y>1.5</y>
 				<z>0</z>
 			</rotation>
@@ -179,33 +284,7 @@
 			-->
 		</object>
 		
-		<object id="8">
-			<model>generated</model>
-			<shader>8</shader>
-			<type>terrain</type>
-			<name>Teren</name>
-			<textures>
-				<texture id="14"/>
-				<texture id="15"/>
-				<texture id="16"/>
-				<!-- TO DO adaugati texturile-->
-			</textures>
-			<position>
-				<x>1.5</x>
-				<y>2.4</y>
-				<z>7</z>
-			</position>
-			<rotation>
-				<x>0.0</x>
-				<y>0.0</y>
-				<z>0.0</z>
-			</rotation>
-			<scale>
-				<x>1.0</x>
-				<y>1.0</y>
-				<z>1.0</z>
-			</scale>
-		</object>
+		
 	</objects>
 	
 	<!--

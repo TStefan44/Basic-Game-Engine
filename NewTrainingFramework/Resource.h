@@ -3,7 +3,6 @@
 #include <string>
 #include <fstream>
 
-#include "../Utilities/rapidxml_utils.hpp"
 #include "../Utilities/utilities.h"
 
 struct ModelResource {
@@ -52,9 +51,11 @@ struct TextureResource {
 	TextureResource(std::string const& folder_path, std::string const& file_name, std::string const& target,
 		std::string const& min_filter, std::string const& mag_filter, std::string const& wrap_s, std::string const& wrap_t) :
 		folder_path(folder_path), file_name(file_name) {
-		
 		if ("2d" == target) {
 			this->target = GL_TEXTURE_2D;
+		}
+		else {
+			this->target = GL_TEXTURE_CUBE_MAP;
 		}
 
 		{

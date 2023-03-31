@@ -17,6 +17,7 @@ struct Vertex
 		return os;
 	}
 
+	// vertex attributes
 	Vector3 pos;
 	Vector3 color;
 	Vector3 normal;

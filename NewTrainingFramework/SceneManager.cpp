@@ -42,6 +42,11 @@ void SceneManager::initSceneInfo() {
 	sceneInfo["shader"] = SceneType::shader;
 	sceneInfo["wired"] = SceneType::wired;
 	sceneInfo["name"] = SceneType::name;
+	sceneInfo["followingCamera"] = SceneType::followingCamera;
+
+	// Terrain
+	sceneInfo["dimension"] = SceneType::dimension;
+	sceneInfo["heights"] = SceneType::heights;
 
 	// Camera
 	sceneInfo["type"] = SceneType::type;
@@ -52,6 +57,15 @@ void SceneManager::initSceneInfo() {
 	sceneInfo["fov"] = SceneType::fov;
 	sceneInfo["near"] = SceneType::near;
 	sceneInfo["far"] = SceneType::far;
+
+	// Fog
+	sceneInfo["fog"] = SceneType::fog;
+	sceneInfo["r"] = SceneType::clearZone;
+	sceneInfo["R"] = SceneType::transitionZone;
+	sceneInfo["fogColor"] = SceneType::fogColor;
+
+	// Fire
+	sceneInfo["dispMax"] = SceneType::dispMax;
 
 	// Debug Settings
 	sceneInfo["objectAxes"] = SceneType::objectAxes;
@@ -115,12 +129,30 @@ void SceneManager::parseDataFromFile() {
 			readObjectsFromFile(pNode); break;
 		case SceneType::debugSettings:
 			readDebugSettingFromFile(pNode); break;
+		case SceneType::fog:
+			readFogFromFile(pNode); break;
 		default: break;
 		}
 	}
 
 	// Free memory
 	delete doc;
+}
+
+void SceneManager::readFogFromFile(rapidxml::xml_node<> const* pRoot) {
+	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
+		std::string dataType = pNode->name();
+
+		switch (sceneInfo[dataType]) {
+		case SceneType::clearZone:
+			fogClear_r = atof(pNode->value()); break;
+		case SceneType::transitionZone:
+			fogTrans_R = atof(pNode->value()); break;
+		case SceneType::fogColor:
+			fogColor = readVector3(pNode, VecType::RGB); break;
+		default: break;
+		}
+	}
 }
 
 void SceneManager::readNameFromFile(rapidxml::xml_node<> const* pRoot) {
@@ -339,6 +371,15 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 		Vector3 rotation;
 		Vector3 scale;
 
+		int nr_cells = 0;
+		int lenght_cell = 0;
+		Vector3 heights = Vector3();
+
+		int id_followCamera = 0;
+		char axes = 0;
+
+		float dispMax = 0;
+
 		objectId = modelId = shaderId = -1;
 		wired = false;
 
@@ -372,6 +413,14 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 				color = readVector3(objectNode, VecType::RGB); break;
 			case SceneType::textures:
 				texturesId = readTexturesId(objectNode); break;
+			case SceneType::dimension:
+				readTerrainSize(objectNode, nr_cells, lenght_cell); break;
+			case SceneType::heights:
+				heights = readVector3(objectNode, VecType::RGB); break;
+			case SceneType::followingCamera:
+				readFollowCamera(objectNode, axes, id_followCamera); break;
+			case SceneType::dispMax:
+				dispMax = atof(objectNode->value()); break;
 			default: break;
 			}
 		}
@@ -392,12 +441,28 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 			obj_type = scene_obj::ObjectType::Normal;
 			new_object = new scene_obj::SceneObject(model, shader, textures);
 		}
-		else {
+		else if (type == "terrain") {
 			obj_type = scene_obj::ObjectType::Terrain;
 			new_object = new scene_obj::Terrain(shader, textures);
+			((scene_obj::Terrain*)new_object)->SetDimensionsTerrain(nr_cells, lenght_cell, heights);
+		}
+		else if (type == "skybox") {
+			model = resourceManager->LoadModel(modelId);
+			obj_type = scene_obj::ObjectType::SkyBox;
+			new_object = new scene_obj::SkyBox(model, shader, textures);
+		}
+		else if (type == "fire") {
+			model = resourceManager->LoadModel(modelId);
+			obj_type = scene_obj::ObjectType::Fire;
+			new_object = new scene_obj::Fire(model, shader, textures, dispMax);
 		}
 
 		new_object->Init(objectId, name, obj_type, position, rotation, scale, TRUE);
+
+		if (id_followCamera != 0) {
+			new_object->SetFollowCamera(axes, cameras[id_followCamera]);
+		}
+
 		objects[objectId] = new_object;
 	}
 }
@@ -468,6 +533,39 @@ std::vector<int> SceneManager::readTexturesId(rapidxml::xml_node<> const* pRoot)
 	}
 
 	return texturesIds;
+}
+
+void SceneManager::readFollowCamera(rapidxml::xml_node<> const* pRoot, char& axes, int& idCamera) {
+	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
+		std::string dataType = pNode->name();
+
+		if (dataType == "camera") {
+			idCamera = atoi(pNode->value());
+		}
+		else if (dataType == "ox") {
+			axes |= 1;
+		}
+		else if (dataType == "oy") {
+			axes |= 2;
+		}
+		else if (dataType == "oz") {
+			axes |= 4;
+		}
+	}
+}
+
+void SceneManager::readTerrainSize(rapidxml::xml_node<> const* pRoot, int& nr_cells, int& length_cell)
+{
+	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
+		std::string dataType = pNode->name();
+
+		if (dataType == "nr_cells") {
+			nr_cells = atoi(pNode->value());
+		}
+		else {
+			length_cell = atoi(pNode->value());
+		}
+	}
 }
 
 Vector3 SceneManager::readVector3(rapidxml::xml_node<> const* pRoot, VecType type) {
