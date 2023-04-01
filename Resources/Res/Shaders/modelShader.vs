@@ -6,9 +6,12 @@ precision mediump int;
 // Vertex attributes
 attribute vec3 a_posL;
 attribute vec2 a_uv;
+attribute vec3 a_normal;
 
 varying vec2 v_uv;
 varying vec3 v_posS;
+varying vec3 v_world_normal;
+varying vec3 v_world_position;
 
 // Uniform data
 uniform mat4 u_model;
@@ -25,5 +28,7 @@ void main()
 	// calculate fragment data
 	v_uv = a_uv;
 	v_posS = vec3(posS);
+	v_world_normal = normalize(mat3(u_model) * a_normal);
+	v_world_position = ( u_model * vec4(a_posL, 1) ).xyz;
 }
    

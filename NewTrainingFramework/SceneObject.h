@@ -2,11 +2,13 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include "Model.h"
 #include "Texture.h"
 #include "Shaders.h"
 #include "Camera.h"
+#include "LightSource.h"
 
 #include "../Utilities/utilities.h"
 
@@ -31,6 +33,12 @@ namespace scene_obj {
 		// Function used when we have the follow property active
 		void SetFollowCamera(char followAxes, camera::Camera* followCamera);
 		void FollowCamera();
+
+		// Function used for Light manipulation
+		void SetMaterialProp(Vector3 material);
+		void SetLightsIds(std::vector<int> ids);
+		std::vector<int>* GetObjLights();
+		void SetLights(std::map<int, light::LightSource*>* obj_lights);
 
 		// Debug function
 		friend std::ostream& operator<<(std::ostream& os, const SceneObject& object) {
@@ -58,6 +66,7 @@ namespace scene_obj {
 	private:
 		// Rendering functions
 		void DrawCommon();
+		void DrawLights();
 		void sendTexture(int TEXTURE, int id);
 
 	protected:
@@ -65,6 +74,14 @@ namespace scene_obj {
 		int id;
 		std::string name;
 		ObjectType type;
+
+		// Light properties
+		int light_number;
+		std::vector<int> lights_ids;
+		std::map<int, light::LightSource*> *obj_lights;
+		float material_kd; // Difuze component
+		float material_ks; // Specular component
+		float material_shininess; // Specular component
 
 		// Scene properties
 		Vector3 position;

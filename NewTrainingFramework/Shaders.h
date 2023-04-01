@@ -29,6 +29,7 @@ namespace res {
 		GLint positionAttribute;
 		GLint colorAttribute;
 		GLint uvAttribute;
+		GLint normalAttribute;
 
 		GLint modelMatrix;
 		GLint viewMatrix;
@@ -43,6 +44,13 @@ namespace res {
 		GLint fogClear_r;
 		GLint fogTrans_R;
 		GLint fogColor;
+
+		GLint ratio;
+		GLint colorAmbientalGlobal;
+		GLint material_kd;
+		GLint material_ks;
+		GLint material_shininess;
+		GLint light_number;
 
 		GLint cameraPos;
 

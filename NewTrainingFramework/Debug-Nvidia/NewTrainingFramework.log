@@ -1,3 +1,4 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  Fire.cpp
+  SceneObject.cpp
+D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\NewTrainingFramework\SceneObject.cpp(261,25): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
   NewTrainingFramework.vcxproj -> D:\Cursuri\Gameloft\My_first_game_engine\NewTrainingFramework_2015\BIN-Nvidia\NewTrainingFramework.exe

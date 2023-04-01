@@ -43,6 +43,7 @@ void SceneManager::initSceneInfo() {
 	sceneInfo["wired"] = SceneType::wired;
 	sceneInfo["name"] = SceneType::name;
 	sceneInfo["followingCamera"] = SceneType::followingCamera;
+	sceneInfo["material"] = SceneType::material;
 
 	// Terrain
 	sceneInfo["dimension"] = SceneType::dimension;
@@ -66,6 +67,14 @@ void SceneManager::initSceneInfo() {
 
 	// Fire
 	sceneInfo["dispMax"] = SceneType::dispMax;
+
+	// Light
+	sceneInfo["lights"] = SceneType::lights;
+	sceneInfo["ambientalLight"] = SceneType::ambientalLight;
+	sceneInfo["ratio"] = SceneType::ratio;
+	sceneInfo["specularColor"] = SceneType::specularColor;
+	sceneInfo["diffuseColor"] = SceneType::diffuseColor;
+	sceneInfo["associatedObject"] = SceneType::associatedObject;
 
 	// Debug Settings
 	sceneInfo["objectAxes"] = SceneType::objectAxes;
@@ -131,12 +140,87 @@ void SceneManager::parseDataFromFile() {
 			readDebugSettingFromFile(pNode); break;
 		case SceneType::fog:
 			readFogFromFile(pNode); break;
+		case SceneType::ambientalLight:
+			readAmbientalLightFromFile(pNode); break;
+		case SceneType::lights:
+			readLightsFromFile(pNode); break;
 		default: break;
 		}
 	}
 
+	setLightsToObjects();
+
 	// Free memory
 	delete doc;
+}
+
+void SceneManager::readLightsFromFile(rapidxml::xml_node<> const* pRoot) {
+	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
+		std::string dataType = pNode->name();
+
+		int lightId = -1;
+		int associatedObject = 0;
+		Vector3 light_color;
+		Vector3 spec_light_color;
+		Vector3 difuze_light_color;
+		std::string type;
+		light::light_type light_type;
+
+		if (dataType != "light")
+			continue;
+
+		lightId = atoi(pNode->first_attribute("id", 0, false)->value());
+
+		for (rapidxml::xml_node<> const* lightNode = pNode->first_node(); lightNode; lightNode = lightNode->next_sibling()) {
+			std::string dataType = lightNode->name();
+
+			switch (sceneInfo[dataType])
+			{
+			case SceneType::associatedObject:
+				associatedObject = atoi(lightNode->value()); break;
+			case SceneType::diffuseColor:
+				difuze_light_color = readVector3(lightNode, VecType::RGB); break;
+			case SceneType::specularColor:
+				spec_light_color = readVector3(lightNode, VecType::RGB); break;
+			case SceneType::type:
+				type = lightNode->value();
+			default:
+				break;
+			}
+		}
+
+		light::LightSource* new_light;
+
+		if (type == "point") {
+			light_type = light::light_type::PUNCTIFORM;
+			new_light = new light::LightSource(lightId, light_type, spec_light_color, difuze_light_color);
+		}
+		else if (type == "spot") {
+			light_type = light::light_type::SPOTLIGHT;
+		}
+		else {
+			light_type = light::light_type::DIRECTIONAL;
+		}
+
+		scene_lights[lightId] = new_light;
+	}
+}
+
+void SceneManager::readAmbientalLightFromFile(rapidxml::xml_node<> const* pRoot) {
+	Vector3 al_color;
+
+	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
+		std::string dataType = pNode->name();
+
+		switch (sceneInfo[dataType]) {
+		case SceneType::color:
+			al_color = readVector3(pNode, VecType::RGB); break;
+		case SceneType::ratio:
+			al_ratio = atof(pNode->value()); break;
+		}
+	}
+
+	ambientalLight = new light::LightSource(0, light::light_type::PUNCTIFORM, al_color);
 }
 
 void SceneManager::readFogFromFile(rapidxml::xml_node<> const* pRoot) {
@@ -366,10 +450,12 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 		int shaderId;
 		bool wired;
 		std::vector<int> texturesId;
+		std::vector<int> lightsId;
 		Vector3 color;
 		Vector3 position;
 		Vector3 rotation;
 		Vector3 scale;
+		Vector3 material = Vector3();
 
 		int nr_cells = 0;
 		int lenght_cell = 0;
@@ -421,6 +507,10 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 				readFollowCamera(objectNode, axes, id_followCamera); break;
 			case SceneType::dispMax:
 				dispMax = atof(objectNode->value()); break;
+			case SceneType::material:
+				material = readVector3(objectNode, VecType::DSS); break;
+			case SceneType::lights:
+				lightsId = readObjLightsFromFile(objectNode); break;
 			default: break;
 			}
 		}
@@ -440,6 +530,8 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 			model = resourceManager->LoadModel(modelId);
 			obj_type = scene_obj::ObjectType::Normal;
 			new_object = new scene_obj::SceneObject(model, shader, textures);
+			new_object->SetMaterialProp(material);
+			new_object->SetLightsIds(lightsId);
 		}
 		else if (type == "terrain") {
 			obj_type = scene_obj::ObjectType::Terrain;
@@ -465,6 +557,19 @@ void SceneManager::readObjectsFromFile(rapidxml::xml_node<> const* pRoot) {
 
 		objects[objectId] = new_object;
 	}
+}
+
+std::vector<int> SceneManager::readObjLightsFromFile(rapidxml::xml_node<> const* pRoot) {
+	std::vector<int> lights_ids;
+	
+	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
+		std::string dataType = pNode->name();
+		if (dataType != "light")
+			continue;
+		lights_ids.push_back(atoi(pNode->value()));
+	}
+
+	return lights_ids;
 }
 
 void SceneManager::readDebugSettingFromFile(rapidxml::xml_node<> const* pRoot) {
@@ -579,6 +684,8 @@ Vector3 SceneManager::readVector3(rapidxml::xml_node<> const* pRoot, VecType typ
 		c1 = "r"; c2 = "g", c3 = "b"; break;
 	case VecType::XYZ:
 		c1 = "x", c2 = "y", c3 = "z"; break;
+	case VecType::DSS:
+		c1 = "material_kd", c2 = "material_ks", c3 = "material_shininess"; break;
 	}
 
 	for (rapidxml::xml_node<> const* pNode = pRoot->first_node(); pNode; pNode = pNode->next_sibling()) {
@@ -609,6 +716,22 @@ void SceneManager::Update(ESContext* esContext, float deltaTime) {
 
 	for (auto const& obj : objects) {
 		obj.second->Update(esContext, deltaTime);
+	}
+}
+
+void SceneManager::setLightsToObjects() {
+	std::vector<int>* lights_ids;
+	std::map<int, light::LightSource*>* obj_lights = new std::map<int, light::LightSource*>;
+	
+	for (auto const& obj : objects) {
+		lights_ids = obj.second->GetObjLights();
+		if (lights_ids->size() <= 0)
+			continue;
+
+		for (int& i : *lights_ids) {
+			(*obj_lights)[i] = scene_lights[i];
+		}
+		obj.second->SetLights(obj_lights);
 	}
 }
 

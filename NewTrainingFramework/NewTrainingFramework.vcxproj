@@ -166,6 +166,7 @@
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="InputController.cpp" />
+    <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="NewTrainingFramework.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Fire.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InputController.h" />
+    <ClInclude Include="LightSource.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />

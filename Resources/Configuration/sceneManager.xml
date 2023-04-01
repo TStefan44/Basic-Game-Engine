@@ -208,6 +208,14 @@
 				<y>1.0</y>
 				<z>1.0</z>
 			</scale>
+			<material>
+				<material_kd>0.1</material_kd>
+				<material_ks>0.9</material_ks>
+				<material_shininess>0.5</material_shininess>
+			</material>
+			<lights>
+				<light>1</light>
+			</lights>
 			<!--
 			Exemple de alte configurari care vor fi adaugate si parsate mai tarziu (pentru taskuri ulterioare)
 			<followingCamera>
@@ -227,13 +235,10 @@
 				</endPoint>
 				<speed>0.1</speed>
 			</trajectory>
-			<lights>
-				<light>1</light>
-			</lights>
 			-->
 		</object>
+
 		<object id="3">
-			
 			<model>5</model>
 			<shader>10</shader>
 			<type>normal</type>
@@ -287,33 +292,35 @@
 		
 	</objects>
 	
-	<!--
+
 	<ambientalLight>
 		<color>
 			<r>1.0</r>
-			<g>1.0</g>
-			<b>1.0</b>
+			<g>0.0</g>
+			<b>0.0</b>
 		</color>
-		<ratio>0.2</ratio>
+		<ratio>0.1</ratio>
 	</ambientalLight>
-	
+
+
 	<lights>
 		<light id="1">
 			<associatedObject>2</associatedObject>
 			<diffuseColor>
 				<r>1.0</r>
-				<g>1.0</g>
+				<g>0.0</g>
 				<b>1.0</b>
 			</diffuseColor>
 			<specularColor>
-				<r>1.0</r>
-				<g>1.0</g>
+				<r>0.0</r>
+				<g>0.0</g>
 				<b>1.0</b>
 			</specularColor>
 			<type>point</type>
 		</light>
 	</lights>
-	-->
+
+
 	<debugSettings>
 		<objectAxes>
 			<OXColor>

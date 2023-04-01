@@ -17,6 +17,9 @@ SceneObject::SceneObject(res::Model* model, res::Shader* shader, std::vector<res
 	// Initial set the follow state inactive
 	followCamera = nullptr;
 	followAxes = 0;
+
+	// Initial light values
+	material_kd = material_ks = material_shininess = 0;
 }
 
 SceneObject::SceneObject() : SceneObject(nullptr, nullptr, nullptr) {}
@@ -54,6 +57,7 @@ void SceneObject::Draw(ESContext* esContext) {
 
 	// Send to shader object data
 	DrawCommon();
+	DrawLights();
 	DrawSpecific();
 
 	// Load textures. Basic object can load up to 5 textures at the same time
@@ -122,6 +126,12 @@ void SceneObject::DrawCommon() {
 		glVertexAttribPointer(shader->colorAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3));
 	}
 
+	if (shader->normalAttribute != -1)
+	{
+		glEnableVertexAttribArray(shader->normalAttribute);
+		glVertexAttribPointer(shader->normalAttribute, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(2 * sizeof(Vector3)));
+	}
+
 	if (shader->uvAttribute != -1)
 	{
 		glEnableVertexAttribArray(shader->uvAttribute);
@@ -168,6 +178,78 @@ void SceneObject::DrawCommon() {
 	}
 }
 
+void SceneObject::DrawLights() {
+	if (shader->ratio != -1) {
+		glUniform1f(shader->ratio, sceneManager->al_ratio);
+	}
+
+	if (shader->colorAmbientalGlobal != -1) {
+		glUniform3fv(shader->colorAmbientalGlobal, 1, (GLfloat*)(&sceneManager->ambientalLight->light_color));
+	}
+
+	if (shader->material_kd != -1) {
+		glUniform1f(shader->material_kd, material_kd);
+	}
+
+	if (shader->material_ks != -1) {
+		glUniform1f(shader->material_ks, material_ks);
+	}
+
+	if (shader->material_shininess != -1) {
+		glUniform1f(shader->material_shininess, material_shininess);
+	}
+
+	if (shader->light_number != -1) {
+		glUniform1i(shader->light_number, light_number);
+	}
+
+	for (int i = 0; i < light_number; i++) {
+		std::string name;
+
+		// Light type
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].type");
+		GLint loc_type = glGetUniformLocation(shader->program, name.c_str());
+		if (loc_type != -1)
+		glUniform1i(loc_type, ((*obj_lights)[lights_ids[i]])->type);
+
+		// Light position
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].light_position");
+		GLint loc_position = glGetUniformLocation(shader->program, name.c_str());
+		if (loc_position != -1)
+		glUniform3fv(loc_position, 1, (GLfloat*)(&((*obj_lights)[lights_ids[i]]->light_position)));
+
+		// Light direction
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].light_direction");
+		GLint loc_direction = glGetUniformLocation(shader->program, name.c_str());
+		if (loc_direction != -1)
+		glUniform3fv(loc_direction, 1, (GLfloat*)(&((*obj_lights)[lights_ids[i]]->light_direction)));
+
+		// Light color
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].light_color");
+		GLint loc_color = glGetUniformLocation(shader->program, name.c_str());
+		if (loc_color != -1)
+		glUniform3fv(loc_color, 1, (GLfloat*)(&((*obj_lights)[lights_ids[i]]->light_color)));
+
+		// Spec light color
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].spec_light_color");
+		GLint spec_loc_color = glGetUniformLocation(shader->program, name.c_str());
+		if (spec_loc_color != -1)
+		glUniform3fv(spec_loc_color, 1, (GLfloat*)(&((*obj_lights)[lights_ids[i]]->spec_light_color)));
+
+		// Diff Light color
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].diff_light_color");
+		GLint diff_loc_color = glGetUniformLocation(shader->program, name.c_str());
+		if (diff_loc_color != -1)
+		glUniform3fv(diff_loc_color, 1, (GLfloat*)(&((*obj_lights)[lights_ids[i]]->difuze_light_color)));
+
+		// Cut off angle
+		name = std::string("u_lights[") + std::to_string(i) + std::string("].cut_off");
+		GLint loc_cut_off = glGetUniformLocation(shader->program, name.c_str());
+		if (loc_cut_off != -1)
+		glUniform1f(loc_cut_off, (*obj_lights)[lights_ids[i]]->cut_off);
+	}
+}
+
 /*
 * Execute follow state on the bound axis. All axis can have a follow
 * state, or none. The variable verify if we have this state on an axis,
@@ -199,6 +281,25 @@ void SceneObject::SetFollowCamera(char followAxes, camera::Camera* followCamera)
 	this->followAxes = followAxes;
 	this->followCamera = followCamera;
 	followOffset = position;
+}
+
+void SceneObject::SetMaterialProp(Vector3 material) {
+	material_kd = material.x;
+	material_ks = material.y;
+	material_shininess = material.z;
+}
+
+void SceneObject::SetLights(std::map<int, light::LightSource*>* obj_lights) {
+	this->obj_lights = obj_lights;
+}
+
+std::vector<int>* SceneObject::GetObjLights() {
+	return &lights_ids;
+}
+
+void SceneObject::SetLightsIds(std::vector<int> ids) {
+	lights_ids = ids;
+	light_number = ids.size();
 }
 
 SceneObject::~SceneObject() {

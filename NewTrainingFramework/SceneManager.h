@@ -13,6 +13,7 @@
 #include "Terrain.h"
 #include "SkyBox.h"
 #include "Fire.h"
+#include "LightSource.h"
 #include "ResourceManager.h"
 #include "InputController.h"
 #include "Camera.h"
@@ -25,7 +26,7 @@ namespace manager {
 	class SceneManager {
 		// Class structures
 	public:
-		enum class VecType { RGB, XYZ };
+		enum class VecType { RGB, XYZ, DSS};
 
 		enum class SceneType {
 			// General
@@ -42,7 +43,7 @@ namespace manager {
 			model, shader, type, name, wired,
 			position, rotation, scale, color, textures,
 			dimension, heights,
-			followingCamera,
+			followingCamera, material,
 
 			// For camera
 			target, up, translationSpeed, rotationSpeed, fov, near, far,
@@ -52,6 +53,11 @@ namespace manager {
 
 			// For fire
 			dispMax,
+
+			// For light
+			lights, ambientalLight, ratio,
+			specularColor, diffuseColor,
+			associatedObject,
 
 			// For debug
 			objectAxes, camAxes,
@@ -82,6 +88,10 @@ namespace manager {
 		void readTerrainSize(rapidxml::xml_node<> const* pRoot, int& nr_cells, int& length_cell);
 		void readFollowCamera(rapidxml::xml_node<> const* pRoot, char& axes, int& idCamera);
 		void readFogFromFile(rapidxml::xml_node<> const* pRoot);
+		void readAmbientalLightFromFile(rapidxml::xml_node<> const* pRoot);
+		void readLightsFromFile(rapidxml::xml_node<> const* pRoot);
+		std::vector<int> readObjLightsFromFile(rapidxml::xml_node<> const* pRoot);
+		void setLightsToObjects();
 
 	public:
 		~SceneManager();
@@ -103,9 +113,14 @@ namespace manager {
 	public:
 		camera::Camera* mainCamera;
 
+		// Fog
 		float fogClear_r;
 		float fogTrans_R;
 		Vector3 fogColor;
+
+		// Ambiental Light
+		light::LightSource *ambientalLight;
+		float al_ratio;
 
 	private:
 		// Resource Manager pointer
@@ -119,6 +134,7 @@ namespace manager {
 		// SceneManager data
 		std::map<int, camera::Camera*> cameras;
 		std::map<int, scene_obj::SceneObject*> objects;
+		std::map<int, light::LightSource*> scene_lights;
 
 		std::map<std::string, SceneType> sceneInfo;
 	};

@@ -81,6 +81,9 @@
     <ClCompile Include="Fire.cpp">
       <Filter>Source Files\Scene Components</Filter>
     </ClCompile>
+    <ClCompile Include="LightSource.cpp">
+      <Filter>Source Files\Scene Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -129,6 +132,9 @@
       <Filter>Header Files\Scene Components</Filter>
     </ClInclude>
     <ClInclude Include="Fire.h">
+      <Filter>Header Files\Scene Components</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
       <Filter>Header Files\Scene Components</Filter>
     </ClInclude>
   </ItemGroup>

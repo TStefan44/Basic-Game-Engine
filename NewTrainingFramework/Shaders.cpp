@@ -65,6 +65,7 @@ void Shader::LoadLocationsAttributes() {
 	positionAttribute = glGetAttribLocation(program, "a_posL");
 	colorAttribute = glGetAttribLocation(program, "a_colL");
 	uvAttribute = glGetAttribLocation(program, "a_uv");
+	normalAttribute = glGetAttribLocation(program, "a_normal");
 
 	modelMatrix = glGetUniformLocation(program, "u_model");
 	viewMatrix = glGetUniformLocation(program, "u_view");
@@ -79,6 +80,14 @@ void Shader::LoadLocationsAttributes() {
 	fogClear_r = glGetUniformLocation(program, "u_fog_r");
 	fogTrans_R = glGetUniformLocation(program, "u_fog_R");
 	fogColor = glGetUniformLocation(program, "u_fogColor");
+
+
+	material_kd = glGetUniformLocation(program, "u_material_kd");
+	material_ks = glGetUniformLocation(program, "u_material_ks");
+	material_shininess = glGetUniformLocation(program, "u_material_shininess");
+	light_number = glGetUniformLocation(program, "u_light_number");
+	ratio = glGetUniformLocation(program, "u_ratio");
+	colorAmbientalGlobal = glGetUniformLocation(program, "u_colorAmbientalGlobal");
 
 	cameraPos = glGetUniformLocation(program, "u_cameraPos");
 }
