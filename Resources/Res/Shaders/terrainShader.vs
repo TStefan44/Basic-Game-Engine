@@ -26,7 +26,8 @@ void main()
 {
 
 	// Calculate vertex position
-	vec4 c_blend = texture2D(u_texture_3, a_uv);
+	vec2 coord = vec2(a_uv.x / u_nr_cells, a_uv.y / u_nr_cells) + u_offset_uv2;
+	vec4 c_blend = texture2D(u_texture_3, coord);
 
 	// Calculate vertex height
 	vec4 posL = vec4(a_posL, 1.0);

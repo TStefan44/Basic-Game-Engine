@@ -216,7 +216,7 @@ void SceneObject::DrawLights() {
 		name = std::string("u_lights[") + std::to_string(i) + std::string("].light_position");
 		GLint loc_position = glGetUniformLocation(shader->program, name.c_str());
 		if (loc_position != -1)
-		glUniform3fv(loc_position, 1, (GLfloat*)(&((*obj_lights)[lights_ids[i]]->light_position)));
+		glUniform3fv(loc_position, 1, (GLfloat*)(&(position + Vector3(50, -25, +150))));
 
 		// Light direction
 		name = std::string("u_lights[") + std::to_string(i) + std::string("].light_direction");

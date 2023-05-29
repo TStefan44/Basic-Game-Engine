@@ -296,10 +296,10 @@
 	<ambientalLight>
 		<color>
 			<r>1.0</r>
-			<g>0.0</g>
-			<b>0.0</b>
+			<g>1.0</g>
+			<b>1.0</b>
 		</color>
-		<ratio>0.1</ratio>
+		<ratio>0.7</ratio>
 	</ambientalLight>
 
 
@@ -308,12 +308,12 @@
 			<associatedObject>2</associatedObject>
 			<diffuseColor>
 				<r>1.0</r>
-				<g>0.0</g>
+				<g>1.0</g>
 				<b>1.0</b>
 			</diffuseColor>
 			<specularColor>
-				<r>0.0</r>
-				<g>0.0</g>
+				<r>1.0</r>
+				<g>1.0</g>
 				<b>1.0</b>
 			</specularColor>
 			<type>point</type>

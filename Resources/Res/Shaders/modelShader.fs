@@ -39,6 +39,8 @@ uniform float u_material_shininess;
 uniform int u_light_number;
 uniform light_source u_lights[MAX_LIGHTS];
 
+vec3 glob_L;
+
 
 vec4 light_contribution(light_source light, vec4 color) {
     vec3 diffuse_specular;
@@ -57,6 +59,8 @@ vec4 light_contribution(light_source light, vec4 color) {
     } else {
         L = normalize( light.light_position - v_world_position );
     }
+
+    glob_L = L;
 
      if (light.type == 1) {
         dist = distance(light.light_position, v_world_position);
@@ -133,4 +137,5 @@ void main()
 
 	// set fragment color
 	gl_FragColor = alpha * vec4(u_fogColor, 1) + (1.0 - alpha) * final;
+    //gl_FragColor = vec4(glob_L, 1);
 }
